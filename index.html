@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Merry Christmas 🎄</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
+    color: white;
+}
+
+.container {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+h1 {
+    font-size: 4rem;
+    animation: glow 2s infinite alternate;
+}
+
+p {
+    font-size: 1.5rem;
+    opacity: 0;
+    animation: fadeIn 3s forwards 1s;
+}
+
+@keyframes glow {
+    from {
+        text-shadow: 0 0 10px #fff, 0 0 20px red;
+    }
+    to {
+        text-shadow: 0 0 20px #fff, 0 0 40px red;
+    }
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+/* Snow */
+.snowflake {
+    position: fixed;
+    top: -10px;
+    color: white;
+    animation: fall linear infinite;
+    z-index: 1;
+}
+
+@keyframes fall {
+    to { transform: translateY(110vh); }
+}
+
+/* Music Button */
+.music-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid white;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    z-index: 1000;
+    transition: all 0.3s;
+    backdrop-filter: blur(10px);
+}
+
+.music-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.music-btn.playing {
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* Start Overlay */
+.start-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    cursor: pointer;
+    transition: opacity 0.5s;
+}
+
+.start-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.start-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px 40px;
+    font-size: 2rem;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    animation: pulse 2s infinite;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.start-btn:hover {
+    transform: scale(1.1);
+}
+
+/* Santa and Sleigh */
+.santa-sleigh {
+    position: fixed;
+    top: 15%;
+    left: -500px;
+    z-index: 100;
+    display: flex;
+    align-items: flex-end;
+    gap: 20px;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+}
+
+.santa-sleigh.flying {
+    animation: flySanta 25s linear infinite;
+}
+
+@keyframes flySanta {
+    0% { left: -500px; }
+    100% { left: 110%; }
+}
+
+.reindeer {
+    animation: hop 0.4s ease-in-out infinite alternate;
+}
+
+.reindeer:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+@keyframes hop {
+    from { transform: translateY(0); }
+    to { transform: translateY(-15px); }
+}
+
+.sleigh-container {
+    animation: sway 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes sway {
+    from { transform: translateY(0) rotate(-2deg); }
+    to { transform: translateY(-8px) rotate(2deg); }
+}
+
+/* Gifts falling */
+.gift {
+    position: fixed;
+    animation: fallGift 4s ease-in forwards;
+    z-index: 50;
+}
+
+@keyframes fallGift {
+    0% {
+        transform: translateY(0) rotate(0deg) scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: translateY(50vh) rotate(180deg) scale(1.1);
+    }
+    100% {
+        transform: translateY(100vh) rotate(360deg) scale(0.9);
+        opacity: 0.7;
+    }
+}
+
+@keyframes fallGift {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0.5;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- Start Overlay -->
+<div class="start-overlay" id="startOverlay">
+    <button class="start-btn">🎄 Click để bắt đầu 🎵</button>
+</div>
+
+<!-- Background Music (AUTO PLAY) -->
+<audio id="bgMusic" loop>
+    <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<button class="music-btn" id="musicToggle">🎵 Đang phát</button>
+
+<!-- Santa and Sleigh -->
+<div class="santa-sleigh" id="santaSleigh">
+    <!-- Sleigh with Santa -->
+    <div class="sleigh-container">
+        <svg width="220" height="140" viewBox="0 0 220 140">
+            <!-- Sleigh Runners -->
+            <path d="M 20 130 Q 10 135, 15 140 L 180 140 Q 185 135, 180 130 Z" fill="#FFD700"/>
+            <path d="M 20 130 Q 10 135, 15 140 L 180 140 Q 185 135, 180 130 Z" fill="#FFA500" opacity="0.6"/>
+            
+            <!-- Sleigh Body -->
+            <path d="M 30 90 Q 25 95, 30 130 L 170 130 Q 175 120, 170 90 Z" fill="#8B0000"/>
+            <path d="M 35 95 Q 30 100, 35 125 L 165 125 Q 170 115, 165 95 Z" fill="#A52A2A"/>
+            
+            <!-- Decorative curves -->
+            <path d="M 30 90 Q 40 85, 50 90" stroke="#FFD700" stroke-width="3" fill="none"/>
+            <path d="M 150 90 Q 160 85, 170 90" stroke="#FFD700" stroke-width="3" fill="none"/>
+            
+            <!-- Seat -->
+            <rect x="50" y="95" width="100" height="30" fill="#654321" rx="5"/>
+            <rect x="52" y="97" width="96" height="26" fill="#8B4513" rx="5"/>
+            
+            <!-- Gift Sack -->
+            <ellipse cx="140" cy="80" rx="25" ry="30" fill="#654321"/>
+            <ellipse cx="140" cy="80" rx="23" ry="28" fill="#8B4513"/>
+            <path d="M 120 75 Q 125 65, 130 70" stroke="#DAA520" stroke-width="2" fill="none"/>
+            
+            <!-- Santa -->
+            <g transform="translate(75, 45)">
+                <!-- Body -->
+                <ellipse cx="0" cy="35" rx="22" ry="28" fill="#DC143C"/>
+                <ellipse cx="0" cy="35" rx="20" ry="26" fill="#FF0000"/>
+                
+                <!-- Belt -->
+                <rect x="-20" y="45" width="40" height="6" fill="#000"/>
+                <rect x="-5" y="43" width="10" height="10" fill="#FFD700" rx="2"/>
+                <rect x="-3" y="45" width="6" height="6" fill="#000"/>
+                
+                <!-- Arms -->
+                <ellipse cx="-18" cy="30" rx="8" ry="15" fill="#DC143C" transform="rotate(-20 -18 30)"/>
+                <ellipse cx="18" cy="30" rx="8" ry="15" fill="#DC143C" transform="rotate(20 18 30)"/>
+                <circle cx="-22" cy="40" r="5" fill="#FFF"/>
+                <circle cx="22" cy="40" r="5" fill="#FFF"/>
+                
+                <!-- Head -->
+                <circle cx="0" cy="5" r="15" fill="#FFDAB9"/>
+                <circle cx="0" cy="5" r="13" fill="#FFECC7"/>
+                
+                <!-- Hat -->
+                <path d="M -12 5 L -8 -15 L 8 -15 L 12 5 Z" fill="#DC143C"/>
+                <ellipse cx="0" cy="5" rx="13" ry="3" fill="#FFF"/>
+                <circle cx="0" cy="-15" r="4" fill="#FFF"/>
+                
+                <!-- Eyes -->
+                <circle cx="-4" cy="3" r="1.5" fill="#000"/>
+                <circle cx="4" cy="3" r="1.5" fill="#000"/>
+                
+                <!-- Nose -->
+                <circle cx="0" cy="7" r="2" fill="#FFA07A"/>
+                
+                <!-- Beard -->
+                <path d="M -8 10 Q -10 15, -7 17 Q 0 20, 7 17 Q 10 15, 8 10" fill="#FFF"/>
+                <ellipse cx="0" cy="13" rx="9" ry="7" fill="#FFF"/>
+                
+                <!-- Mustache -->
+                <ellipse cx="-4" cy="9" rx="5" ry="2" fill="#FFF"/>
+                <ellipse cx="4" cy="9" rx="5" ry="2" fill="#FFF"/>
+            </g>
+        </svg>
+    </div>
+
+    <!-- Reindeer 1 -->
+    <svg class="reindeer" width="100" height="100" viewBox="0 0 100 100">
+        <!-- Legs -->
+        <rect x="25" y="60" width="4" height="25" fill="#6B4423" rx="2"/>
+        <rect x="35" y="60" width="4" height="25" fill="#6B4423" rx="2"/>
+        <rect x="55" y="60" width="4" height="25" fill="#6B4423" rx="2"/>
+        <rect x="65" y="60" width="4" height="25" fill="#6B4423" rx="2"/>
+        <!-- Body -->
+        <ellipse cx="45" cy="50" rx="30" ry="18" fill="#8B4513"/>
+        <ellipse cx="45" cy="50" rx="28" ry="16" fill="#A0522D"/>
+        <!-- Neck -->
+        <rect x="73" y="35" width="12" height="20" fill="#A0522D" rx="6"/>
+        <!-- Head -->
+        <ellipse cx="82" cy="30" rx="12" ry="15" fill="#A0522D"/>
+        <ellipse cx="82" cy="30" rx="10" ry="13" fill="#C4926B"/>
+        <!-- Ears -->
+        <ellipse cx="77" cy="20" rx="4" ry="8" fill="#A0522D"/>
+        <ellipse cx="87" cy="20" rx="4" ry="8" fill="#A0522D"/>
+        <!-- Antlers -->
+        <path d="M 77 18 L 72 10 L 69 12 M 72 10 L 74 5" stroke="#654321" stroke-width="2.5" fill="none"/>
+        <path d="M 87 18 L 92 10 L 95 12 M 92 10 L 90 5" stroke="#654321" stroke-width="2.5" fill="none"/>
+        <!-- Eyes -->
+        <circle cx="79" cy="28" r="2" fill="#000"/>
+        <circle cx="85" cy="28" r="2" fill="#000"/>
+        <circle cx="79" cy="27" r="1" fill="#fff"/>
+        <circle cx="85" cy="27" r="1" fill="#fff"/>
+        <!-- Nose -->
+        <ellipse cx="90" cy="32" rx="3" ry="2.5" fill="#FF0000"/>
+        <circle cx="90" cy="32" r="2" fill="#FF3333"/>
+        <!-- Tail -->
+        <path d="M 18 45 Q 10 40, 5 48" stroke="#8B4513" stroke-width="3" fill="none"/>
+    </svg>
+    
+    <!-- Reindeer 2 -->
+    <svg class="reindeer" width="100" height="100" viewBox="0 0 100 100">
+        <!-- Legs -->
+        <rect x="25" y="60" width="4" height="25" fill="#6B4423" rx="2"/>
+        <rect x="35" y="60" width="4" height="25" fill="#6B4423" rx="2"/>
+        <rect x="55" y="60" width="4" height="25" fill="#6B4423" rx="2"/>
+        <rect x="65" y="60" width="4" height="25" fill="#6B4423" rx="2"/>
+        <!-- Body -->
+        <ellipse cx="45" cy="50" rx="30" ry="18" fill="#8B4513"/>
+        <ellipse cx="45" cy="50" rx="28" ry="16" fill="#A0522D"/>
+        <!-- Neck -->
+        <rect x="73" y="35" width="12" height="20" fill="#A0522D" rx="6"/>
+        <!-- Head -->
+        <ellipse cx="82" cy="30" rx="12" ry="15" fill="#A0522D"/>
+        <ellipse cx="82" cy="30" rx="10" ry="13" fill="#C4926B"/>
+        <!-- Ears -->
+        <ellipse cx="77" cy="20" rx="4" ry="8" fill="#A0522D"/>
+        <ellipse cx="87" cy="20" rx="4" ry="8" fill="#A0522D"/>
+        <!-- Antlers -->
+        <path d="M 77 18 L 72 10 L 69 12 M 72 10 L 74 5" stroke="#654321" stroke-width="2.5" fill="none"/>
+        <path d="M 87 18 L 92 10 L 95 12 M 92 10 L 90 5" stroke="#654321" stroke-width="2.5" fill="none"/>
+        <!-- Eyes -->
+        <circle cx="79" cy="28" r="2" fill="#000"/>
+        <circle cx="85" cy="28" r="2" fill="#000"/>
+        <circle cx="79" cy="27" r="1" fill="#fff"/>
+        <circle cx="85" cy="27" r="1" fill="#fff"/>
+        <!-- Nose -->
+        <ellipse cx="90" cy="32" rx="3" ry="2.5" fill="#8B4513"/>
+        <!-- Tail -->
+        <path d="M 18 45 Q 10 40, 5 48" stroke="#8B4513" stroke-width="3" fill="none"/>
+    </svg>
+</div>
+
+<div class="container">
+    <h1>🎄 Merry Christmas 🎄</h1>
+    <p>Wishing you love, joy, and peace</p>
+</div>
+
+<script>
+const music = document.getElementById("bgMusic");
+const musicBtn = document.getElementById("musicToggle");
+const startOverlay = document.getElementById("startOverlay");
+let isPlaying = false;
+
+/* Start music on overlay click */
+startOverlay.addEventListener("click", () => {
+    music.play();
+    music.volume = 0.7;
+    isPlaying = true;
+    musicBtn.classList.add("playing");
+    startOverlay.classList.add("hidden");
+    
+    // Start Santa flying animation
+    santaSleigh.classList.add("flying");
+    
+    setTimeout(() => {
+        startOverlay.style.display = "none";
+    }, 500);
+});
+
+/* Toggle music on button click */
+musicBtn.addEventListener("click", () => {
+    if (isPlaying) {
+        music.pause();
+        musicBtn.textContent = "🎵 Bật nhạc";
+        musicBtn.classList.remove("playing");
+        isPlaying = false;
+    } else {
+        music.play();
+        musicBtn.textContent = "🎵 Đang phát";
+        musicBtn.classList.add("playing");
+        isPlaying = true;
+    }
+});
+
+// Snow generator
+for (let i = 0; i < 60; i++) {
+    const snow = document.createElement("div");
+    snow.className = "snowflake";
+    snow.innerHTML = "❄";
+    snow.style.left = Math.random() * 100 + "vw";
+    snow.style.animationDuration = (3 + Math.random() * 5) + "s";
+    snow.style.fontSize = (10 + Math.random() * 20) + "px";
+    snow.style.opacity = Math.random();
+    document.body.appendChild(snow);
+}
+
+// Santa dropping gifts
+const santaSleigh = document.getElementById("santaSleigh");
+
+function dropGift() {
+    const gift = document.createElement("div");
+    gift.className = "gift";
+    
+    const colors = [
+        ['#FF6B6B', '#C92A2A'],
+        ['#4ECDC4', '#2980B9'],
+        ['#FFD93D', '#F39C12'],
+        ['#A8E6CF', '#27AE60'],
+        ['#FF6347', '#8B0000']
+    ];
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    
+    gift.innerHTML = `
+        <svg width="40" height="45" viewBox="0 0 40 45">
+            <!-- Box Shadow -->
+            <rect x="2" y="17" width="36" height="26" fill="#000" opacity="0.2" rx="2"/>
+            <!-- Box -->
+            <rect x="0" y="15" width="36" height="26" fill="${color[0]}" rx="2"/>
+            <rect x="1" y="16" width="34" height="24" fill="${color[1]}" rx="2"/>
+            <!-- Ribbon Vertical -->
+            <rect x="15" y="15" width="6" height="26" fill="#FFD700"/>
+            <rect x="16" y="16" width="4" height="24" fill="#FFA500"/>
+            <!-- Ribbon Horizontal -->
+            <rect x="0" y="25" width="36" height="6" fill="#FFD700"/>
+            <rect x="1" y="26" width="34" height="4" fill="#FFA500"/>
+            <!-- Bow -->
+            <ellipse cx="12" cy="12" rx="8" ry="6" fill="#FFD700"/>
+            <ellipse cx="24" cy="12" rx="8" ry="6" fill="#FFD700"/>
+            <circle cx="18" cy="12" r="4" fill="#FFD700"/>
+            <ellipse cx="12" cy="11" rx="7" ry="5" fill="#FFA500"/>
+            <ellipse cx="24" cy="11" rx="7" ry="5" fill="#FFA500"/>
+            <circle cx="18" cy="11" r="3.5" fill="#FFA500"/>
+            <!-- Shine -->
+            <rect x="8" y="18" width="3" height="8" fill="#FFF" opacity="0.3" rx="1"/>
+        </svg>
+    `;
+    
+    // Get Santa's current position
+    const santaRect = santaSleigh.getBoundingClientRect();
+    gift.style.left = (santaRect.left + 200) + "px";
+    gift.style.top = (santaRect.top + 60) + "px";
+    
+    document.body.appendChild(gift);
+    
+    // Remove gift after animation
+    setTimeout(() => {
+        gift.remove();
+    }, 4000);
+}
+
+// Drop gifts every 2 seconds
+setInterval(dropGift, 2000);
+</script>
+
+</body>
+</html>
